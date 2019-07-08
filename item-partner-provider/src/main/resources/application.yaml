@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    active: dev
+    include: default,mq,dubbo,jdbc,redis
+
+server:
+    context-path: /item-partner-soa
+    port: 8080
+
+logging:
+    config: classpath:item-partner-logback.xml
+    path: /opt/logs/spring-boot
+    level:
+      ROOT: INFO
+      com.dfire.retail: DEBUG
+      com.alibaba.dubbo: ERROR
+      RocketmqClient: ERROR
+      com.dfire.spring.boot.example.mapper: DEBUG

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dfire.soa.item.partner.mapper.PartnerMappingMapper">
+	<resultMap id="partnerMappingMap" type="com.dfire.soa.item.partner.bo.PartnerMapping">
+        <result property="id" column="id"/>
+        <result property="entityId" column="entity_id"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="localId" column="local_id"/>
+        <result property="outId" column="out_id"/>
+        <result property="mpType" column="mp_type"/>
+        <result property="ext" column="ext"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="opTime" column="op_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastVer" column="last_ver"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+        id,
+        entity_id,
+        shop_id,
+        local_id,
+        out_id,
+        mp_type,
+        ext,
+        is_valid,
+        op_time,
+        create_time,
+        last_ver
+	</sql>
+	<sql id="searchByQuery">
+		<where>
+			entity_id = #{entityId}
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="shopId != null">
+				AND shop_id = #{shopId}
+			</if>
+			<if test="localId != null">
+				AND local_id = #{localId}
+			</if>
+			<if test="outId != null">
+				AND out_id = #{outId}
+			</if>
+
+			<if test="mpType != null">
+				AND mp_type = #{mpType}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 增加 -->
+	<insert id="insert" parameterType="com.dfire.soa.item.partner.bo.PartnerMapping">
+        INSERT INTO partner_mapping (
+			<include refid="Base_Column_List" />
+        ) VALUES (
+        	#{id} ,
+        	#{entityId} ,
+        	#{shopId} ,
+        	#{localId} ,
+        	#{outId} ,
+        	#{mpType} ,
+        	#{ext} ,
+			1 ,
+			UNIX_TIMESTAMP(now())*1000 ,
+			UNIX_TIMESTAMP(now())*1000 ,
+			1 
+        )
+	</insert>
+    
+	<!-- 更新 -->
+	<update id="update" >
+        UPDATE 
+			partner_mapping
+		SET
+			<if test="shopId != null">
+				shop_id = #{shopId} ,
+			</if>
+			<if test="localId != null">
+				local_id = #{localId} ,
+			</if>
+			<if test="outId != null">
+				out_id = #{outId} ,
+			</if>
+
+			<if test="mpType != null">
+				mp_type = #{mpType} ,
+			</if>
+			<if test="isValid != null">
+				is_valid = #{isValid},
+			</if>
+			<if test="ext != null">
+				ext = #{ext} ,
+			</if>
+			op_time = UNIX_TIMESTAMP(now())*1000 ,
+	        last_ver = last_ver+1
+        WHERE 
+        	entity_id = #{entityId}
+        	AND id = #{id};
+	</update>
+
+	<!-- 逻辑删除 -->
+    <delete id="delete">
+        UPDATE 
+			partner_mapping
+		SET
+			is_valid = 0,
+			op_time = UNIX_TIMESTAMP(now())*1000 ,
+	        last_ver = last_ver+1 
+		WHERE
+        	entity_id = #{entityId}
+        	AND id = #{id}
+			AND is_valid = 1;
+    </delete>
+
+	<!-- 根据 entityId 批量删除 -->
+	<delete id="batchDeleteByEntityId">
+		UPDATE
+		partner_mapping
+		SET
+		is_valid = 0 ,
+		op_time = UNIX_TIMESTAMP(now())*1000 ,
+		last_ver = last_ver+1
+		WHERE
+		entity_id = #{entityId}
+		AND is_valid = 1;
+	</delete>
+
+	<!-- 根据id查询 -->
+    <select id="getById" resultMap="partnerMappingMap">
+		SELECT 
+			<include refid="Base_Column_List" />
+		FROM partner_mapping
+	    WHERE
+			entity_id = #{entityId}
+			AND id = #{id}
+			AND is_valid = 1;
+	</select>
+    
+	<!-- 根据query查询 -->
+    <select id="getListByQuery" parameterType="com.dfire.soa.item.partner.bo.query.PartnerMappingQuery" resultMap="partnerMappingMap">
+    	SELECT 
+			<include refid="Base_Column_List" />
+	    FROM partner_mapping
+		<include refid="searchByQuery"/>
+        <if test="orderBy != null and orderBy != ''">
+             ORDER BY #{orderBy}
+			<if test="desc != null and desc == true">
+				DESC
+			</if>
+        </if>
+        <if test="startPos != null and pageSize != null">
+             limit #{startPos},#{pageSize}
+        </if>
+    </select>
+</mapper>
+

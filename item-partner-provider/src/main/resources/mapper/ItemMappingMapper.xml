@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dfire.soa.item.partner.mapper.ItemMappingMapper">
+	<resultMap id="itemMappingMap" type="com.dfire.soa.item.partner.bo.ItemMapping">
+        <result property="id" column="id"/>
+        <result property="entityId" column="entity_id"/>
+        <result property="tpShopId" column="tp_shop_id"/>
+        <result property="localId" column="local_id"/>
+        <result property="commonId" column="common_id"/>
+        <result property="tpId" column="tp_id"/>
+        <result property="platCode" column="plat_code"/>
+        <result property="idType" column="id_type"/>
+        <result property="syncStatus" column="sync_status"/>
+        <result property="syncResult" column="sync_result"/>
+        <result property="ext" column="ext"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="opTime" column="op_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastVer" column="last_ver"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+        id,
+        entity_id,
+        tp_shop_id,
+        local_id,
+        common_id,
+        tp_id,
+        plat_code,
+        id_type,
+        sync_status,
+        sync_result,
+        ext,
+        is_valid,
+        op_time,
+        create_time,
+        last_ver
+	</sql>
+	<sql id="searchByQuery">
+		<where>
+			entity_id = #{entityId}
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="tpShopId != null">
+				AND tp_shop_id = #{tpShopId}
+			</if>
+			<if test="localId != null">
+				AND local_id = #{localId}
+			</if>
+			<if test="commonId != null">
+				AND common_id = #{commonId}
+			</if>
+			<if test="tpId != null">
+				AND tp_id = #{tpId}
+			</if>
+			<if test="platCode != null">
+				AND plat_code = #{platCode}
+			</if>
+			<if test="idType != null">
+				AND id_type = #{idType}
+			</if>
+			<if test="syncStatus != null">
+				AND sync_status = #{syncStatus}
+			</if>
+			<if test="syncResult != null">
+				AND sync_result = #{syncResult}
+			</if>
+			<if test="ext != null">
+				AND ext = #{ext}
+			</if>
+			<if test="isValid != null">
+				AND is_valid = #{isValid}
+			</if>
+			<if test="opTime != null">
+				AND op_time = #{opTime}
+			</if>
+			<if test="createTime != null">
+				AND create_time = #{createTime}
+			</if>
+			<if test="lastVer != null">
+				AND last_ver = #{lastVer}
+			</if>
+			<if test="idList != null and idList.size()>0">
+				AND id IN
+				<foreach collection="idList" item="idItem" open="(" close=")" separator=",">
+					#{idItem}
+				</foreach>
+			</if>
+			<if test="idTypeList != null and idTypeList.size()>0">
+				AND id_type IN
+				<foreach collection="idTypeList" item="idTypeItem" open="(" close=")" separator=",">
+					#{idTypeItem}
+				</foreach>
+			</if>
+			<if test="localIdList != null and localIdList.size()>0">
+				AND local_id IN
+				<foreach collection="localIdList" item="localIdItem" open="(" close=")" separator=",">
+					#{localIdItem}
+				</foreach>
+			</if>
+			<if test="commonIdList != null and commonIdList.size()>0">
+				AND common_id IN
+				<foreach collection="commonIdList" item="commonIdItem" open="(" close=")" separator=",">
+					#{commonIdItem}
+				</foreach>
+			</if>
+			<if test="tpIdList != null and tpIdList.size()>0">
+				AND tp_id IN
+				<foreach collection="tpIdList" item="tpIdItem" open="(" close=")" separator=",">
+					#{tpIdItem}
+				</foreach>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 增加 -->
+	<insert id="insert" parameterType="com.dfire.soa.item.partner.bo.ItemMapping">
+        INSERT INTO item_mapping (
+			<include refid="Base_Column_List" />
+        ) VALUES (
+        	#{id} ,
+        	#{entityId} ,
+        	#{tpShopId} ,
+        	#{localId} ,
+        	#{commonId} ,
+        	#{tpId} ,
+        	#{platCode} ,
+        	#{idType} ,
+        	#{syncStatus} ,
+        	#{syncResult} ,
+        	#{ext} ,
+			1 ,
+			UNIX_TIMESTAMP(now())*1000 ,
+			UNIX_TIMESTAMP(now())*1000 ,
+			1 
+        )
+	</insert>
+    
+	<!-- 更新 -->
+	<update id="update" >
+        UPDATE 
+			item_mapping
+		SET
+	        tp_shop_id = #{tpShopId} ,
+	        local_id = #{localId} ,
+	        common_id = #{commonId} ,
+	        tp_id = #{tpId} ,
+	        plat_code = #{platCode} ,
+	        id_type = #{idType} ,
+	        sync_status = #{syncStatus} ,
+	        sync_result = #{syncResult} ,
+	        ext = #{ext} ,
+			op_time = UNIX_TIMESTAMP(now())*1000 ,
+			is_valid = #{isValid} ,
+	        last_ver = last_ver+1 
+        WHERE 
+        	entity_id = #{entityId}
+        	AND id = #{id};
+	</update>
+
+	<!-- 逻辑删除 -->
+    <delete id="delete">
+        UPDATE 
+			item_mapping 
+		SET
+			is_valid = 0,
+			op_time = UNIX_TIMESTAMP(now())*1000 ,
+	        last_ver = last_ver+1 
+		WHERE
+        	entity_id = #{entityId}
+        	AND id = #{id}
+			AND is_valid = 1;
+    </delete>
+
+	<!-- 根据 entityId 批量删除 -->
+	<delete id="batchDeleteByEntityId">
+		UPDATE
+		item_mapping
+		SET
+		is_valid = 0 ,
+		op_time = UNIX_TIMESTAMP(now())*1000 ,
+		last_ver = last_ver+1
+		WHERE
+		entity_id = #{entityId}
+		AND plat_code = #{platCode}
+		<if test="tpShopId != null">
+			AND tp_shop_id = #{tpShopId}
+		</if>
+		AND is_valid = 1;
+	</delete>
+
+
+
+    
+	<!-- 根据id查询 -->
+    <select id="getById" resultMap="itemMappingMap">
+		SELECT 
+			<include refid="Base_Column_List" />
+		FROM item_mapping 
+	    WHERE
+			entity_id = #{entityId}
+			AND id = #{id}
+			AND is_valid = 1;
+	</select>
+    
+	<!-- 根据query查询 -->
+    <select id="getListByQuery" parameterType="com.dfire.soa.item.partner.bo.query.ItemMappingQuery" resultMap="itemMappingMap">
+    	SELECT 
+			<include refid="Base_Column_List" />
+	    FROM item_mapping 
+		<include refid="searchByQuery"/>
+        <if test="orderBy != null and orderBy != ''">
+             ORDER BY #{orderBy}
+			<if test="desc != null and desc == true">
+				DESC
+			</if>
+        </if>
+        <if test="startPos != null and pageSize != null">
+             limit #{startPos},#{pageSize}
+        </if>
+    </select>
+
+
+    <select id="getListByQueryWithoutEntityId" parameterType="com.dfire.soa.item.partner.bo.query.ItemMappingQuery" resultMap="itemMappingMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM item_mapping where 1=1
+        <if test="entityId != null">
+            AND entity_id = #{entityId}
+        </if>
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="tpShopId != null">
+            AND tp_shop_id = #{tpShopId}
+        </if>
+        <if test="localId != null">
+            AND local_id = #{localId}
+        </if>
+        <if test="commonId != null">
+            AND common_id = #{commonId}
+        </if>
+        <if test="tpId != null">
+            AND tp_id = #{tpId}
+        </if>
+        <if test="platCode != null">
+            AND plat_code = #{platCode}
+        </if>
+        <if test="idType != null">
+            AND id_type = #{idType}
+        </if>
+        <if test="syncStatus != null">
+            AND sync_status = #{syncStatus}
+        </if>
+        <if test="syncResult != null">
+            AND sync_result = #{syncResult}
+        </if>
+        <if test="ext != null">
+            AND ext = #{ext}
+        </if>
+        <if test="isValid != null">
+            AND is_valid = #{isValid}
+        </if>
+        <if test="opTime != null">
+            AND op_time = #{opTime}
+        </if>
+        <if test="createTime != null">
+            AND create_time = #{createTime}
+        </if>
+        <if test="lastVer != null">
+            AND last_ver = #{lastVer}
+        </if>
+        <if test="orderBy != null and orderBy != ''">
+            ORDER BY #{orderBy}
+            <if test="desc != null and desc == false">
+                ASC
+            </if>
+        </if>
+        <if test="startPos != null and pageSize != null">
+            limit #{startPos},#{pageSize}
+        </if>
+    </select>
+
+
+	<!-- 根据query计数 -->
+    <select id="countByQuery" parameterType="com.dfire.soa.item.partner.bo.query.ItemMappingQuery" resultType="int">
+    	SELECT 
+			count(1)
+	    FROM item_mapping 
+		<include refid="searchByQuery"/>
+    </select>
+
+
+	<!-- 根据本地信息列表查找关联映射关系 -->
+	<select id="batchQueryRelateTpIds" resultMap="itemMappingMap">
+		select
+		<include refid="Base_Column_List" />
+		from item_mapping
+		where
+		<foreach collection="itemMappings" separator="or" open="(" close=")" index="index" item="item">
+			local_id = #{item.localId} and common_id = #{item.commonId}
+		</foreach>
+		and entity_id = #{entityId}
+		and plat_code = #{platCode}
+		and tp_shop_id = #{tpShopId}
+		and id_type = #{idType}
+		and is_valid = 1
+	</select>
+
+
+	<!-- 根据本地信息列表查找关联映射关系 -->
+	<select id="batchQueryRelateLocalIds" resultMap="itemMappingMap">
+		select
+		<include refid="Base_Column_List" />
+		from item_mapping
+		where
+		<foreach collection="tpIdList" separator="or" open="(" close=")" index="index" item="tpId">
+            tp_id = #{tpId}
+		</foreach>
+		and entity_id = #{entityId}
+		and plat_code = #{platCode}
+		and tp_shop_id = #{tpShopId}
+		and id_type = #{idType}
+		and is_valid = 1
+	</select>
+
+	<!-- 查询失败的记录数 -->
+	<select id="batchQueryFailCount"  resultType="com.dfire.soa.item.partner.bo.BrandSyncResultBo">
+		select
+		entity_id as entityId, count(*) as failCount
+		from item_mapping
+		where 1=1
+		<if test="entityIdList != null and entityIdList.size()>0">
+			AND entity_id IN
+			<foreach collection="entityIdList" item="entityId" open="(" close=")" separator=",">
+				#{entityId}
+			</foreach>
+		</if>
+		AND plat_code = #{platCode}
+		AND is_valid = 1
+		AND sync_status = 0
+		group by entity_id
+	</select>
+
+
+</mapper>
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2009-2017 Hangzhou 2Dfire Technology Co., Ltd. All rights reserved
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+    <dubbo:service interface="com.dfire.soa.item.partner.service.IItemMappingClientService" ref="itemMappingClientService"  version="${item.partner.verson}" />
+    <dubbo:service interface="com.dfire.soa.item.partner.service.IItemMenuMappingClientService" ref="itemMenuMappingClientService"  version="${item.partner.verson}" />
+    <dubbo:service interface="com.dfire.soa.item.partner.service.ICookService" ref="cookService" version="${item.partner.verson}">
+        <dubbo:method name="batchInsertByIdList" timeout="60000"></dubbo:method>
+    </dubbo:service>
+    <dubbo:service interface="com.dfire.soa.item.partner.service.ICookDetailService" ref="cookDetailService" version="${item.partner.verson}"/>
+    <dubbo:service interface="com.dfire.soa.item.partner.koubei.service.IKoubeiSyncService" ref="koubeiSyncServiceImpl"  version="${item.partner.verson}" >
+        <dubbo:method name="batchDelByMerchantIdShopId"  timeout="300000"  />
+        <dubbo:method name="itemSync" async="true"/>
+        <dubbo:method name="batchItemSync" async="true"/>
+        <dubbo:method name="brandItemSync" async="true"/>
+    </dubbo:service>
+    <dubbo:service interface="com.dfire.soa.item.partner.service.IPartnerMappingClientService" ref="partnerMappingClientService"  version="${item.partner.verson}" />
+</beans>

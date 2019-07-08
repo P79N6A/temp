@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- rerp商品迁移消息处理 -->
+    <!-- rocketMq TC 消息发送者 -->
+    <bean id="rocketMqSendManager" class="com.twodfire.async.message.client.sender.SendManagerImplForRm"
+          init-method="start">
+        <property name="topic" value="${rocketmq.partner.topic}"/>
+        <property name="producerGroup" value="${rocketmq.partner.producerGroup}"/>
+        <property name="namesrvAddr" value="${rocketmq.namesrvAddr}"/>
+    </bean>
+    <!-- rerp商品迁移消息发送Manager -->
+    <bean id="rmqSendManager" class="com.twodfire.async.message.client.sender.SendManagerFacade">
+        <property name="sendManagerList">
+            <list>
+                <ref bean="rocketMqSendManager"/>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="itemRmqService" class="com.dfire.soa.item.partner.rocketmq.ItemRmqService">
+        <property name="rmqSendManager" ref="rmqSendManager"></property>
+    </bean>
+
+    <!-- ons异步消息线程池-->
+    <bean id="onsAsyncExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="50"/>
+        <property name="maxPoolSize" value="100"/>
+        <property name="queueCapacity" value="100"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
+        <property name="awaitTerminationSeconds" value="100"/>
+        <property name="keepAliveSeconds" value="300"/>
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
+        </property>
+    </bean>
+
+    <!--消息监听-->
+    <!--监听自身应用的消息-->
+    <bean class="com.twodfire.async.message.client.consumer.ConsumerListenerForRm" init-method="start">
+        <property name="topic" value="${rocketmq.partner.topic}"/>
+        <property name="consumerGroup" value="${rocketmq.partner.consumerGroup}"/>
+        <property name="namesrvAddr" value="${rocketmq.namesrvAddr}"/>
+        <property name="consumerHandle" ref="partnerConsumerHandle"/>
+        <property name="messageModel" value="CLUSTERING"/>
+    </bean>
+
+    <bean id="partnerConsumerHandle" class="com.twodfire.async.message.client.consumer.support.MultiConsumerHandle">
+        <property name="callbackList">
+            <list>
+                <bean id="cookCallBack" class="com.dfire.soa.item.partner.koubei.message.KoubeiDishCookMsgHandler"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--消息监听-->
+    <!--监听item-soa的消息-->
+    <bean class="com.twodfire.async.message.client.consumer.ConsumerListenerForRm" init-method="start">
+        <property name="topic" value="${rocketmq.item.topic}"/>
+        <property name="consumerGroup" value="${rocketmq.item.consumerGroup}"/>
+        <property name="namesrvAddr" value="${rocketmq.namesrvAddr}"/>
+        <property name="consumerHandle" ref="itemConsumerHandle"/>
+        <property name="messageModel" value="CLUSTERING"/>
+    </bean>
+
+    <bean id="itemConsumerHandle" class="com.twodfire.async.message.client.consumer.support.MultiConsumerHandle">
+        <property name="callbackList">
+            <list>
+               <!-- <bean id="MenuUpdateCallBack" class="com.dfire.soa.item.partner.rocketmq.callback.MenuUpdateCallBack"/>
+                <bean id="MenuDeleteCallBack" class="com.dfire.soa.item.partner.rocketmq.callback.MenuDeleteCallBack"/>
+                <bean id="MenuSpecDetailCallback" class="com.dfire.soa.item.partner.rocketmq.callback.MenuSpecDetailCallBack"/>-->
+            </list>
+        </property>
+    </bean>
+</beans>

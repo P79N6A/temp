@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2009-2016 Hangzhou 2Dfire Technology Co., Ltd. All rights reserved
+  -->
+
+<configuration scan="true" scanPeriod="10 seconds" debug="true">
+    <property name="ALERT_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{32}.%M:%L %msg%n%xException%n"/>
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{32}.%M:%L %msg%n"/>
+    <jmxConfigurator/>
+
+    <!-- ROOT 所有日志 -->
+    <appender name="FILE" class="com.twodfire.log.appender.AsyncRollingFileAppender">
+        <file>${log.dir}/item-partner-soa/file.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/file_%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!--超时日志-->
+    <appender name="TIME_OUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/item-partner-soa/timeout.log</file>
+        <Append>true</Append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/timeout.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- keep 5 days worth of history -->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <!-- LONG_TIME -->
+    <appender name="LONG_TIME" class="com.twodfire.log.appender.AsyncRollingFileAppender">
+        <file>${log.dir}/item-partner-soa/long_time.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/long_time.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 添加appender：ALERT_MONITOR -->
+    <appender name="ALERT_MONITOR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 如果是tomcat，则是 /opt/logs/tomcat/alert_monitor.log -->
+        <file>${log.dir}/alert_monitor.log</file>
+        <Append>true</Append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/bak/alert_monitor.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${ALERT_PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <appender name="BIZ_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/item-partner-soa/biz.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/biz.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- keep 5 days worth of history -->
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <appender name="LC_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/item-partner-soa/lc.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/lc.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- keep 5 days worth of history -->
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <appender name="ROCKET_MQ" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/item-partner-soa/mq.log</file>
+        <Append>true</Append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/mq.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{32}.%M:%L %msg%n</pattern>
+            <immediateFlush>${log.immediateFlush}</immediateFlush>
+        </encoder>
+    </appender>
+     
+    <appender name="ERROR" class="com.twodfire.log.appender.AsyncRollingFileAppender">
+        <file>${log.dir}/item-partner-soa/error.log</file>
+        <Append>true</Append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- keep 10 days worth of history -->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{32}.%M:%L %msg%n</pattern>
+            <charset>UTF-8</charset>
+            <immediateFlush>${log.immediateFlush}</immediateFlush>
+        </encoder>
+    </appender>
+
+    <appender name="ACCESS_LOG" class="com.twodfire.log.appender.AsyncRollingFileAppender">
+        <file>${log.dir}/item-partner-soa/access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/item-partner-soa/bak/access.%d{yyyy-MM-dd}.log.%i.zip</fileNamePattern>
+            <!-- keep 5 days worth of history -->
+            <maxHistory>5</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!--文件达到 最大512MB时会被压缩和切割 -->
+                <maxFileSize>512 MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <!--日志队列达到50，丢弃后面的日志 -->
+        <queueSize>50</queueSize>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--业务日志-->
+    <logger name="BIZ_LOG" level="${log.level}" additivity="false">
+
+        <appender-ref ref="BIZ_LOG"/>
+        <appender-ref ref="ALERT_MONITOR"/>
+    </logger>
+
+    <!--流程日志-->
+    <logger name="LC_LOG" level="${log.level}" additivity="false">
+
+        <appender-ref ref="LC_LOG"/>
+    </logger>
+
+    <!--  LONG_TIME 日志 -->
+    <logger name="LONG_TIME" level="${method.time.log.level}" additivity="false">
+
+        <appender-ref ref="LONG_TIME"/>
+        <appender-ref ref="ALERT_MONITOR"/>
+    </logger>
+
+    <logger name="com.alibaba.dubbo.rpc.filter.TimeoutFilter" level="${method.timeout.log.level}" additivity="false">
+
+        <appender-ref ref="TIME_OUT"/>
+    </logger>
+
+    <logger name="ROCKET_MQ" level="INFO"  additivity="false">
+        <appender-ref ref="ROCKET_MQ"/>
+    </logger>
+
+    <logger name="ERROR" level="ERROR"  additivity="false">
+        <appender-ref ref="ERROR"/>
+        <appender-ref ref="ALERT_MONITOR"/>
+    </logger>
+    <logger name="com.twodfire.log.dubbo.filter.AccessLogRotateFilter" level="INFO" additivity="false">
+        <appender-ref ref="ACCESS_LOG"/>
+    </logger>
+    <root>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

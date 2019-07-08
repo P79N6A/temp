@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dfire.soa.item.partner.mapper.ItemMenuMappingMapper">
+	<resultMap id="itemMenuMappingMap" type="com.dfire.soa.item.partner.bo.ItemMenuMapping">
+        <result property="id" column="id"/>
+        <result property="entityId" column="entity_id"/>
+		<result property="tpShopId" column="tp_shop_id"/>
+        <result property="localItemId" column="local_item_id"/>
+        <result property="tpItemId" column="tp_item_id"/>
+        <result property="localMenuId" column="local_menu_id"/>
+        <result property="tpMenuId" column="tp_menu_id"/>
+        <result property="syncStatus" column="sync_status"/>
+        <result property="syncResult" column="sync_result"/>
+        <result property="ext" column="ext"/>
+        <result property="platCode" column="plat_code"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="opTime" column="op_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastVer" column="last_ver"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+        id,
+        entity_id,
+        tp_shop_id,
+        local_item_id,
+        tp_item_id,
+        local_menu_id,
+        tp_menu_id,
+        sync_status,
+        sync_result,
+        ext,
+        plat_code,
+        is_valid,
+        op_time,
+        create_time,
+        last_ver
+	</sql>
+	<sql id="searchByQuery">
+		<where>
+			entity_id = #{entityId}
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="tpShopId != null">
+				AND tp_shop_id = #{tpShopId}
+			</if>
+			<if test="localItemId != null">
+				AND local_item_id = #{localItemId}
+			</if>
+			<if test="tpItemId != null">
+				AND tp_item_id = #{tpItemId}
+			</if>
+			<if test="localMenuId != null">
+				AND local_menu_id = #{localMenuId}
+			</if>
+			<if test="tpMenuId != null">
+				AND tp_menu_id = #{tpMenuId}
+			</if>
+			<if test="syncStatus != null">
+				AND sync_status = #{syncStatus}
+			</if>
+			<if test="syncResult != null">
+				AND sync_result = #{syncResult}
+			</if>
+			<if test="ext != null">
+				AND ext = #{ext}
+			</if>
+			<if test="platCode != null">
+				AND plat_code = #{platCode}
+			</if>
+			<if test="isValid != null">
+				AND is_valid = #{isValid}
+			</if>
+			<if test="opTime != null">
+				AND op_time = #{opTime}
+			</if>
+			<if test="createTime != null">
+				AND create_time = #{createTime}
+			</if>
+			<if test="lastVer != null">
+				AND last_ver = #{lastVer}
+			</if>
+			<if test="idList != null and idList.size()>0">
+				AND id IN
+				<foreach collection="idList" item="idItem" open="(" close=")" separator=",">
+					#{idItem}
+				</foreach>
+			</if>
+			<if test="localItemIdList != null and localItemIdList.size()>0">
+				AND local_item_id IN
+				<foreach collection="localItemIdList" item="localItemIdItem" open="(" close=")" separator=",">
+					#{localItemIdItem}
+				</foreach>
+			</if>
+			<if test="tpItemIdList != null and tpItemIdList.size()>0">
+				AND tp_item_id IN
+				<foreach collection="tpItemIdList" item="tpItemIdItem" open="(" close=")" separator=",">
+					#{tpItemIdItem}
+				</foreach>
+			</if>
+			<if test="localMenuIdList != null and localMenuIdList.size()>0">
+				AND local_menu_id IN
+				<foreach collection="localMenuIdList" item="localMenuIdItem" open="(" close=")" separator=",">
+					#{localMenuIdItem}
+				</foreach>
+			</if>
+			<if test="tpMenuIdList != null and tpMenuIdList.size()>0">
+				AND tp_menu_id IN
+				<foreach collection="tpMenuIdList" item="tpMenuIdItem" open="(" close=")" separator=",">
+					#{tpMenuIdItem}
+				</foreach>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 增加 -->
+	<insert id="insert" parameterType="com.dfire.soa.item.partner.bo.ItemMenuMapping">
+        INSERT INTO item_menu_mapping (
+			<include refid="Base_Column_List" />
+        ) VALUES (
+        	#{id} ,
+        	#{entityId} ,
+			#{tpShopId} ,
+        	#{localItemId} ,
+        	#{tpItemId} ,
+        	#{localMenuId} ,
+        	#{tpMenuId} ,
+        	#{syncStatus} ,
+        	#{syncResult} ,
+        	#{ext} ,
+        	#{platCode} ,
+        	#{isValid} ,
+			UNIX_TIMESTAMP(now())*1000 ,
+			UNIX_TIMESTAMP(now())*1000 ,
+			1 
+        )
+	</insert>
+    
+	<!-- 更新 -->
+	<update id="update" >
+        UPDATE 
+			item_menu_mapping
+		SET
+	        tp_shop_id = #{tpShopId} ,
+	        local_item_id = #{localItemId} ,
+	        tp_item_id = #{tpItemId} ,
+	        local_menu_id = #{localMenuId} ,
+	        tp_menu_id = #{tpMenuId} ,
+	        sync_status = #{syncStatus} ,
+	        sync_result = #{syncResult} ,
+	        ext = #{ext} ,
+	        plat_code = #{platCode} ,
+	        is_valid = #{isValid} ,
+			op_time = UNIX_TIMESTAMP(now())*1000 ,
+	        last_ver = last_ver+1 
+        WHERE
+        	entity_id = #{entityId}
+        	AND id = #{id};
+	</update>
+
+	<!-- 逻辑删除 -->
+    <delete id="delete">
+        UPDATE 
+			item_menu_mapping 
+		SET
+			is_valid = 0,
+			op_time = UNIX_TIMESTAMP(now())*1000 ,
+	        last_ver = last_ver+1 
+		WHERE
+        	entity_id = #{entityId}
+        	AND id = #{id}
+			AND is_valid = 1;
+    </delete>
+
+    <!-- 批量逻辑删除 -->
+    <delete id="batchDeleteByEntityId">
+        UPDATE
+        item_menu_mapping
+        SET
+        is_valid = 0 ,
+        op_time = UNIX_TIMESTAMP(now())*1000 ,
+        last_ver = last_ver+1
+        WHERE
+        entity_id = #{entityId}
+		<if test="tpShopId != null">
+			AND tp_shop_id = #{tpShopId}
+		</if>
+        AND plat_code = #{platCode}
+        AND is_valid = 1;
+    </delete>
+
+    
+	<!-- 根据id查询 -->
+    <select id="getById" resultMap="itemMenuMappingMap">
+		SELECT 
+			<include refid="Base_Column_List" />
+		FROM item_menu_mapping 
+	    WHERE
+			entity_id = #{entityId}
+			AND id = #{id}
+			AND is_valid = 1;
+	</select>
+    
+	<!-- 根据query查询 -->
+    <select id="getListByQuery" parameterType="com.dfire.soa.item.partner.bo.query.ItemMenuMappingQuery" resultMap="itemMenuMappingMap">
+    	SELECT 
+			<include refid="Base_Column_List" />
+	    FROM item_menu_mapping 
+		<include refid="searchByQuery"/>
+        <if test="orderBy != null and orderBy != ''">
+             ORDER BY #{orderBy}
+			<if test="desc != null and desc == true">
+				DESC
+			</if>
+        </if>
+        <if test="startPos != null and pageSize != null">
+             limit #{startPos},#{pageSize}
+        </if>
+    </select>
+	
+	<!-- 根据query计数 -->
+    <select id="countByQuery" parameterType="com.dfire.soa.item.partner.bo.query.ItemMenuMappingQuery" resultType="int">
+    	SELECT 
+			count(1)
+	    FROM item_menu_mapping 
+		<include refid="searchByQuery"/>
+    </select>
+</mapper>
+

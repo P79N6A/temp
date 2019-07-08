@@ -1,0 +1,61 @@
+spring:
+      rocketmq:
+              producer:
+                #主消息生产者
+                name: item-partner
+                topic: ${rocketmq.partner.topic}
+                producer-group: ${rocketmq.partner.producerGroup}
+                nameServerAddress:  ${rocketmq.namesrvAddr}
+                retryTimesWhenSendFailed: 2
+
+              consumer:
+                #主消息消费者
+                name: item_partner_mq
+                topic:  ${rocketmq.partner.topic}
+                consumerGroup:  ${rocketmq.partner.consumerGroup}
+                nameServerAddress:  ${rocketmq.namesrvAddr}
+                consumeThreadMin: 50
+                consumerHandle:
+                  - koubeiDishCookMsgHandler
+                multi:
+                  - name: koubei_dish_sellout
+                    topic:  msstate
+                    consumerGroup:  c_msstate_item-partner
+                    nameServerAddress:  ${rocketmq.namesrvAddr}
+                    consumerHandle:
+                         - koubeiDishSelloutMsgHandler
+                  - name: item_modify_mq
+                    topic:  item
+                    consumerGroup:  c_item_partner
+                    nameServerAddress:  ${rocketmq.namesrvAddr}
+                    consumerHandle:
+                       - koubeiKindMenuMsgHandler
+                       - koubeiDishMsgHandler
+                       - koubeiMenuSpecMsgHandler
+                       - koubeiSpecMsgHandler
+                       - koubeiSuitMenuMsgHandler
+                       - koubeiUnitMsgHandler
+                       - koubeiDishMakeMsgHandler
+                       - koubeiDishMenuAdditionMsgHandler
+
+
+      monitor:
+              path: item-partner-soa
+
+
+---
+spring:
+  profiles: dev
+
+---
+spring:
+  profiles: daily
+
+---
+spring:
+  profiles: pre
+
+---
+spring:
+  profiles: publish
+

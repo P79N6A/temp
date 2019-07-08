@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfire.soa.item.partner.mapper.CookDetailMapper">
+    <resultMap id="CookDetailDO" type="com.dfire.soa.item.partner.domain.CookDetailDO">
+        <result property="id" column="id"/>
+        <result property="cookId" column="cook_id"/>
+        <result property="entityId" column="entity_id"/>
+        <result property="menuId" column="menu_id"/>
+        <result property="price" column="price"/>
+        <result property="memberPrice" column="member_price"/>
+        <result property="specExtra" column="spec_extra"/>
+        <result property="ext" column="ext"/>
+        <result property="usePriceSwitch" column="use_price_switch"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="createTime" column="create_time"/>
+        <result property="opTime" column="op_time"/>
+        <result property="lastVer" column="last_ver"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,cook_id,entity_id,menu_id,price,member_price,spec_extra,ext,use_price_switch,
+        is_valid,create_time,op_time,last_ver
+    </sql>
+
+    <sql id="CONDITION_QUERY">
+        <where>
+            entity_id = #{entityId}
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="cookId != null">
+                and cook_id = #{cookId}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId}
+            </if>
+            <if test="idList != null and idList.size() > 0">
+                and id in
+                <foreach collection="idList" item="idItem" index="index"
+                         open="(" close=")" separator=",">
+                    #{idItem}
+                </foreach>
+            </if>
+            <if test="menuIdList != null and menuIdList.size() > 0">
+                and menu_id in
+                <foreach collection="menuIdList" item="menuId" index="index"
+                         open="(" close=")" separator=",">
+                    #{menuId}
+                </foreach>
+            </if>
+            <if test="isValid !=null">
+                and is_valid=#{isValid}
+            </if>
+        </where>
+        <if test="orderBy != null and orderBy != '' ">
+            order by ${orderBy}
+        </if>
+        <if test="!usePage">
+            <if test="startPos != null and pageSize != null">
+                limit #{startPos},#{pageSize}
+            </if>
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.dfire.soa.item.partner.domain.CookDetailDO">
+        INSERT INTO cook_detail (
+        id,
+        cook_id,
+        entity_id,
+        menu_id,
+        price,
+        member_price,
+        spec_extra,
+        ext,
+        use_price_switch,
+        is_valid,
+        create_time,
+        op_time,
+        last_ver
+        ) VALUES (
+        #{id},
+        #{cookId},
+        #{entityId},
+        #{menuId},
+        #{price},
+        #{memberPrice},
+        #{specExtra},
+        #{ext},
+        #{usePriceSwitch},
+        #{isValid},
+        UNIX_TIMESTAMP(NOW(3))*1000,
+        UNIX_TIMESTAMP(NOW(3))*1000,
+        0
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dfire.soa.item.partner.domain.CookDetailDO">
+        UPDATE cook_detail SET
+        <if test="cookId != null and cookId != ''">
+            cook_id = #{cookId},
+        </if>
+        <if test="menuId != null and menuId != ''">
+            menu_id = #{menuId},
+        </if>
+        <if test="price != null and price != ''">
+            price = #{price},
+        </if>
+        <if test="memberPrice != null and memberPrice != ''">
+            member_price = #{memberPrice},
+        </if>
+        <if test="specExtra != null">
+            spec_extra = #{specExtra},
+        </if>
+        <if test="ext != null and ext != ''">
+            ext = #{ext},
+        </if>
+        <if test="usePriceSwitch != null">
+            use_price_switch = #{usePriceSwitch},
+        </if>
+        <if test="isValid != null">
+            is_valid = #{isValid},
+        </if>
+        op_time = UNIX_TIMESTAMP(NOW(3))*1000,
+        last_ver = last_ver + 1
+        WHERE entity_id = #{entityId}
+        AND id = #{id}
+        AND last_ver = #{lastVer};
+    </update>
+
+    <update id="deleteById">
+        UPDATE cook_detail SET
+        is_valid = 0,
+        op_time = UNIX_TIMESTAMP(NOW(3))*1000,
+        last_ver = last_ver + 1
+        WHERE entity_id = #{entityId}
+        AND id = #{id};
+    </update>
+
+    <!-- 批量添加 -->
+    <insert id="batchInsert" parameterType="com.dfire.soa.item.partner.domain.CookDetailDO">
+        INSERT INTO cook_detail
+        (
+        <include refid="Base_Column_List"/>
+        )
+        VALUES
+        <foreach collection="cookDetailDOList" item="cookDetail" index="index" separator=",">
+            (
+            #{cookDetail.id},
+            #{cookDetail.cookId},
+            #{cookDetail.entityId},
+            #{cookDetail.menuId},
+            #{cookDetail.price},
+            #{cookDetail.memberPrice},
+            #{cookDetail.specExtra},
+            #{cookDetail.ext},
+            #{cookDetail.usePriceSwitch},
+            #{cookDetail.isValid},
+            UNIX_TIMESTAMP(NOW(3))*1000,
+            UNIX_TIMESTAMP(NOW(3))*1000,
+            0
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryMenuIdsByCookId" resultType="java.lang.String">
+        SELECT menu_id
+        FROM cook_detail
+        WHERE
+        entity_id=#{entityId}
+        AND cook_id=#{cookId}
+        AND is_valid=1;
+    </select>
+
+    <update id="batchDeleteByIdList">
+        UPDATE cook_detail SET
+        is_valid=0,
+        op_time = UNIX_TIMESTAMP(NOW(3))*1000,
+        last_ver = last_ver + 1
+        WHERE entity_id = #{entityId}
+        <if test="idList != null and idList.size() > 0">
+            AND id in
+            <foreach collection="idList" item="idItem" open="(" close=")" separator=",">
+                #{idItem}
+            </foreach>
+        </if>
+        and is_valid=1
+    </update>
+
+    <select id="queryById" resultMap="CookDetailDO">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM cook_detail
+        WHERE
+        entity_id=#{entityId}
+        AND id=#{id}
+        AND is_valid=1;
+    </select>
+
+    <select id="queryByIdWithoutValid" resultMap="CookDetailDO">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM cook_detail
+        WHERE
+        entity_id=#{entityId}
+        AND id=#{id};
+    </select>
+
+    <select id="selectByQuery" parameterType="com.dfire.soa.item.partner.bo.query.CookDetailQuery"
+            resultMap="CookDetailDO">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM cook_detail
+        <include refid="CONDITION_QUERY"/>
+    </select>
+
+    <update id="deleteByMenuId">
+        UPDATE cook_detail SET
+        is_valid=0,
+        op_time = UNIX_TIMESTAMP(NOW(3))*1000,
+        last_ver = last_ver + 1
+        WHERE entity_id = #{entityId}
+        AND menu_id=#{menuId}
+        AND is_valid=1;
+    </update>
+
+    <update id="deleteByMenuIdList">
+        UPDATE cook_detail SET
+        is_valid=0,
+        op_time = UNIX_TIMESTAMP(NOW(3))*1000,
+        last_ver = last_ver + 1
+        WHERE entity_id = #{entityId}
+        <if test="menuIdList != null and menuIdList.size() > 0">
+            AND menu_id in
+            <foreach collection="menuIdList" item="idItem" open="(" close=")" separator=",">
+                #{idItem}
+            </foreach>
+        </if>
+        and is_valid=1
+    </update>
+
+    <update id="batchDelete">
+        UPDATE cook_detail SET
+        is_valid = 0,
+        op_time = UNIX_TIMESTAMP(NOW(3))*1000,
+        last_ver = last_ver + 1
+        WHERE is_valid=1
+        and create_time>=#{createTime};
+    </update>
+
+
+    <select id="queryEntityIdWihtFewCookDetail" resultType="java.lang.String">
+        <![CDATA[
+
+        select entity_id from (select count(*) as a, entity_id from cook_detail GROUP BY entity_id HAVING a < 10) t;
+
+        ]]>
+    </select>
+
+    <select id="queryCountByMenuIdAndCreateTime" resultType="java.lang.Integer">
+        select count(1) from cook_detail
+        where entity_id=#{entityId}
+        <if test="cookId != null and cookId != ''">
+            and cook_id = #{cookId}
+        </if>
+        <if test="menuId != null and menuId != ''">
+            and menu_id = #{menuId}
+        </if>
+        and is_valid=1
+        <!--<![CDATA[
+        and create_time<1539877020000;
+        ]]>-->
+    </select>
+
+    <update id="batchDeleteByMenuIdListAndCreateTime">
+        update cook_detail SET
+        is_valid = 0,
+        op_time = UNIX_TIMESTAMP(NOW(3))*1000,
+        last_ver = last_ver + 1
+        WHERE
+        entity_id=#{entityId}
+        <if test="menuIdList != null and menuIdList.size() > 0">
+            AND menu_id in
+            <foreach collection="menuIdList" item="idItem" open="(" close=")" separator=",">
+                #{idItem}
+            </foreach>
+        </if>
+        and is_valid = 1
+        <![CDATA[
+        and create_time<1539877020000;
+        ]]>
+    </update>
+
+</mapper>

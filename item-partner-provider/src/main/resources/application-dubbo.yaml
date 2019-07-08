@@ -1,0 +1,48 @@
+spring:
+  dubbo:
+         application:
+             name: item-partner
+             owner: item
+         registry:
+             address: ${spring.dubbo.registry.address}
+         protocol:
+             name: dubbo
+             port: 20880
+             accesslog: /opt/logs/spring-boot/item-partner-soa/access.log
+         monitor:
+             protocol: registry
+         provider:
+             retries: 0
+             delay: -1
+             loadbalance: leastactive
+         consumer:
+             timeout: 10000
+             check: false
+         service:
+             shutdown:
+                   wait:  30000
+
+
+---
+spring:
+  profiles: dev
+
+
+---
+spring:
+  profiles: daily
+
+---
+spring:
+  profiles: pre
+  dubbo:
+         registry:
+             address: zookeeper://zk1.2dfire-inc.com:2181?backup=zk2.2dfire-inc.com:2181,zk3.2dfire-inc.com:2181
+
+---
+spring:
+  profiles: publish
+  dubbo:
+         registry:
+             address: zookeeper://zk1.2dfire-inc.com:2181?backup=zk2.2dfire-inc.com:2181,zk3.2dfire-inc.com:2181
+

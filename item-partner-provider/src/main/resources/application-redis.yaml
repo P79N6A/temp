@@ -1,0 +1,32 @@
+spring:
+     redis:
+           name: cacheService
+           sentinel:
+               nodes: ${cache.sentinels}
+               master: ${cache.master}
+           database: ${cache.database}
+           pool:
+               max-active: 10
+               max-idle: 9
+               min-idle: 9
+               max-wait: 10000
+               test-on-borrow: true
+               time-between-eviction-runs-millis: 60
+
+
+---
+spring:
+  profiles: dev
+
+---
+spring:
+  profiles: daily
+
+---
+spring:
+  profiles: pre
+
+---
+spring:
+  profiles: publish
+

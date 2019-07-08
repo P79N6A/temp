@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2009-2017 Hangzhou 2Dfire Technology Co., Ltd. All rights reserved
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:consumer check="false"/>
+
+    <!--id-->
+    <dubbo:reference id="uniqueIdGenerator" interface="com.dfire.soa.flame.UniqueIdGenerator"  version="1.0.0"/>
+
+    <!-- 第三方服务 -->
+    <dubbo:reference id="kouBeiDishCookService" interface="com.dfire.open.takeout.service.IKouBeiDishCookService" version="${takeout.dubbo.version}" check="false"/>
+    <dubbo:reference id="koubeiCommonService" interface="com.dfire.open.takeout.service.IKoubeiCommonService" version="${takeout.dubbo.version}" check="false"/>
+
+    <!-- 第三方绑定服务 -->
+    <dubbo:reference id="dishObjectMappingService" interface="com.dfire.soa.thirdbind.service.IDishObjectMappingService" version="${dubbo.thirdBind.version}" check="false"/>
+    <dubbo:reference id="skuMappingService" interface="com.dfire.soa.thirdbind.service.ISkuMappingService" version="${dubbo.thirdBind.version}" check="false"/>
+    <dubbo:reference id="shopBindService" interface="com.dfire.soa.thirdbind.service.IShopBindService" version="${dubbo.thirdBind.version}" check="false"/>
+
+
+    <dubbo:reference id="whiteListService" interface="com.dfire.soa.boss.whitelist.service.IWhiteListService" version="${boss.soa.version}" timeout="300000" check="false"/>
+    <dubbo:reference id="shopBindClientService" interface="com.dfire.soa.shop.service.IShopBindClientService" version="${item.soa.version}" check="false"/>
+
+    <!-- item-soa-->
+    <dubbo:reference id="getMenuService" interface="com.dfire.soa.item.service.IGetMenuService" version="${item.soa.version}" check="false"/>
+    <dubbo:reference id="thirdPartyService" interface="com.dfire.soa.item.service.IThirdPartyService" version="${item.soa.version}" retries="3" check="false"/>
+    <dubbo:reference id="multiMenuReadService" interface="com.dfire.soa.item.service.IMultiMenuReadService" version="${item.soa.version}" retries="3" check="false"/>
+    <dubbo:reference id="menuService" interface="com.dfire.soa.item.service.IMenuService" timeout="10000" version="${item.soa.version}" check="false"/>
+    <dubbo:reference id="getSuitMenuService" interface="com.dfire.soa.item.service.IGetSuitMenuService" version="${item.soa.version}" check="false"/>
+    <dubbo:reference id="getSpecDetailService" interface="com.dfire.soa.item.service.IGetSpecDetailService" version="${item.soa.version}" check="false"/>
+    <dubbo:reference id="multiMenuWriteService" interface="com.dfire.soa.item.service.IMultiMenuWriteService" version="${item.soa.version}" check="false"/>
+    <dubbo:reference id="getMakeService" interface="com.dfire.soa.item.service.IGetMakeService" version="${item.soa.version}" check="false"/>
+    <dubbo:reference id="getTasteService" interface="com.dfire.soa.item.service.IGetTasteService" version="${item.soa.version}" check="false"/>
+    <dubbo:reference id="getAdditionService" interface="com.dfire.soa.item.service.IGetAdditionService" version="${item.soa.version}" check="false"/>
+
+    <!-- item-platform-->
+    <dubbo:reference id="itemAssembleGroupRelationService" interface="com.dfire.soa.item.platform.service.IItemAssembleGroupRelationService" version="${item.platform.version}" check="false"/>
+    <dubbo:reference id="itemAssembleGroupService" interface="com.dfire.soa.item.platform.service.IItemAssembleGroupService" version="${item.platform.version}" check="false"/>
+
+    <!-- 桌位 -->
+    <dubbo:reference id="seatService" interface="com.dfire.soa.turtle.service.ISeatService" version="1.0.0" check="false"/>
+    <dubbo:reference id="areaClientService" interface="com.dfire.soa.turtle.service.IAreaClientService" version="1.0.0" check="false"/>
+    <dubbo:reference id="configService" interface="com.dfire.soa.turtle.service.IConfigService" version="1.0.0" check="false"/>
+
+    <!-- takeout-center  需要去掉-->
+    <dubbo:reference id="openItemRelationService" interface="com.dfire.soa.consumer.takeout.shop.service.IOpenItemRelationService" version="${takeout.shop.verson}" check="false"/>
+    <!--<dubbo:reference id="shopItemRelationService" interface="com.dfire.soa.consumer.takeout.shop.service.IShopItemRelationService" version="${takeout.shop.verson}" check="false"/>-->
+    <!--<dubbo:reference id="joinerItemMappingService" interface="com.dfire.soa.consumer.takeout.service.IJoinerItemMappingService" version="${takeout.shop.verson}" check="false"/>-->
+
+    <!--msstate-->
+    <dubbo:reference id="menuBalanceClientService" interface="com.dfire.soa.msstate.service.IMenuBalanceClientService" timeout="3000" version="${msstate.soa.version}" check="false"/>
+
+    <!--fire-log-client-->
+    <dubbo:reference id="fireLogClientAsyncService" interface="com.dfire.soa.oplog.service.IFireLogClientAsyncService" version="1.0.0" check="false" async="true"/>
+
+    <!-- rest-adapter -->
+    <dubbo:reference id="restSeatService" interface="com.dfire.soa.rest.service.IRestSeatService" version="1.0.0" check="false"/>
+
+    <dubbo:reference id="shopClientService" interface="com.dfire.soa.shop.service.IShopClientService" version="1.0.0" check="false"/>
+
+</beans>
+
+

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.15.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>com.dfire.soa.item</groupId>
+	<artifactId>item-partner-soa</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+
+	<name>item-partner-soa</name>
+	<description>2Dfire test project for Spring Boot</description>
+
+	<properties>
+		<disable.checks>true</disable.checks>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<spring-javaformat.version>0.0.6</spring-javaformat.version>
+		<item-thirdpart-client.version>1.0.0</item-thirdpart-client.version>
+        <logback-version>1.1.6</logback-version>
+        <twodfire-logback-version>1.1.0</twodfire-logback-version>
+        <third-takeout-client.version>1.0.29</third-takeout-client.version>
+        <thirdbind-client.version>1.0.47</thirdbind-client.version>
+        <turtle-client.version>1.3.5</turtle-client.version>
+        <dfire-result.version>1.0.1</dfire-result.version>
+        <spring-boot-autoconfigure-monitor.version>1.1.9</spring-boot-autoconfigure-monitor.version>
+        <msstate-client.version>1.0.28</msstate-client.version>
+        <item-partner-client.version>1.0.16</item-partner-client.version>
+        <boss-client.version>1.6.3</boss-client.version>
+        <shop-client.version>1.3.17</shop-client.version>
+        <rest-adapter-client.version>1.1.56</rest-adapter-client.version>
+    </properties>
+
+
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.dfire.spring.boot</groupId>
+                <artifactId>dfire-dubbo-spring-boot-starter</artifactId>
+                <version>1.5.15.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>dubbo</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.spring.boot</groupId>
+                <artifactId>dfire-redis-spring-boot-starter</artifactId>
+                <version>1.5.15.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.spring.boot</groupId>
+                <artifactId>dfire-rocketmq-spring-boot-starter</artifactId>
+                <version>1.5.15.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.soa.item</groupId>
+                <artifactId>item-partner-client</artifactId>
+                <version>${item-partner-client.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>1.1.10</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cobar</groupId>
+                <artifactId>cobar-driver</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.spring.boot</groupId>
+                <artifactId>dfire-health-spring-boot-starter</artifactId>
+                <version>1.5.15.0</version>
+                <scope>runtime</scope>
+            </dependency>
+            <!-- jdbc驱动-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.26</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twodfire</groupId>
+                <artifactId>twodfire-logback</artifactId>
+                <version>${twodfire-logback-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.third</groupId>
+                <artifactId>third-takeout-client</artifactId>
+                <version>${third-takeout-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.soa</groupId>
+                <artifactId>thirdbind-client</artifactId>
+                <version>${thirdbind-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.soa</groupId>
+                <artifactId>boss-client</artifactId>
+                <version>${boss-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.soa</groupId>
+                <artifactId>shop-client</artifactId>
+                <version>${shop-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.soa</groupId>
+                <artifactId>turtle-client</artifactId>
+                <version>${turtle-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.open.api</groupId>
+                <artifactId>open-util</artifactId>
+                <version>1.0.76-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twodfire</groupId>
+                <artifactId>dfire-result</artifactId>
+                <version>${dfire-result.version}</version>
+                <optional>true</optional>
+            </dependency>
+
+            <!-- takeout-shop-client 需要去掉 -->
+            <dependency>
+                <groupId>com.dfire.soa.consumer</groupId>
+                <artifactId>takeout-shop-client</artifactId>
+                <version>1.0.31</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.dfire.third</groupId>
+                        <artifactId>third-takeout-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>dubbo</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.2dfire.spring.boot</groupId>
+                <artifactId>spring-boot-autoconfigure-monitor</artifactId>
+                <version>${spring-boot-autoconfigure-monitor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.soa</groupId>
+                <artifactId>msstate-client</artifactId>
+                <version>${msstate-client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>common-validator</artifactId>
+                        <groupId>com.dfire.middleware</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.dfire.soa</groupId>
+                <artifactId>rest-adapter-client</artifactId>
+                <version>${rest-adapter-client.version}</version>
+            </dependency>
+
+        </dependencies>
+	</dependencyManagement>
+
+
+
+	<modules>
+		<module>item-partner-client</module>
+		<module>item-partner-provider</module>
+	</modules>
+
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>zmsoft release distribution respository</name>
+			<url>http://nexus.2dfire-dev.com/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>zmsoft snapshots distribution respository</name>
+			<url>http://nexus.2dfire-dev.com/content/repositories/snapshots/</url>
+			<uniqueVersion>true</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>
